@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <!--Jméno stránky-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Srovnání aproximačních metod</title>
+
+    <!--Použité knihovny (tailwind.css pro rychlé styly, chart.js pro grafy)-->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!--KaTeX pro vykreslování matematických vzorců metod-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+    <!--Základní styl stránky-->
+    <style>
+        body {
+            background-color: #020617;
+            font-family: monospace;
+            color: #ffffff;
+        }
+        .panel {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 4px;
+        }
+        select, input {
+            background: #020617;
+            border: 1px solid #1e293b;
+            color: white;
+            padding: 4px 8px;
+        }
+    </style>
+</head>
+
+<body class="p-4">
+
+<!--Hlavní nadpis-->
+<header class="max-w-6xl mx-auto mb-4">
+    <h1 style="text-align: center;" class="text-lg text-white">
+        Srovnání aproximačních metod
+    </h1>
+</header>
+
+<main class="max-w-6xl mx-auto space-y-4">
+
+    <!--Výběr ze všech aproximačních metod-->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+        <!--Metody pro pí-->
+        <div class="panel p-4">
+            <h2 style="text-align: center;" class="text-sm mb-2 text-blue-400">Ludolfovo číslo (π)</h2>
+            <div class="space-y-1" id="pi-metody">
+                <!--Tlačítka spouštějící Javascript funkci prepinacMetody, která zaznamenává vybranou metodu-->
+                <button onclick="prepinacMetody('pi','Leibniz',this)" class="w-full text-middle px-2 py-1 border border-slate-800 hover:bg-slate-800 text-sm">Leibnizova řada</button>
+                <button onclick="prepinacMetody('pi','Viete',this)" class="w-full text-middle px-2 py-1 border border-slate-800 hover:bg-slate-800 text-sm">Vièteho metoda</button>
+                <button onclick="prepinacMetody('pi','Wallis',this)" class="w-full text-middle px-2 py-1 border border-slate-800 hover:bg-slate-800 text-sm">Wallisův součin</button>
+                <button onclick="prepinacMetody('pi','Machin',this)" class="w-full text-middle px-2 py-1 border border-slate-800 hover:bg-slate-800 text-sm">Machinův vzorec</button>
+                <button onclick="prepinacMetody('pi','Ramanujan',this)" class="w-full text-middle px-2 py-1 border border-slate-800 hover:bg-slate-800 text-sm">Ramanujanova řada</button>
+                <button onclick="prepinacMetody('pi','Chudnovsky',this)" class="w-full text-middle px-2 py-1 border border-slate-800 hover:bg-slate-800 text-sm">Chudnovského algoritmus</button>
+                <button onclick="prepinacMetody('pi','Montecarlo',this)" class="w-full text-middle px-2 py-1 border border-slate-800 hover:bg-slate-800 text-sm">Monte Carlo</button>
+            </div>
+        </div>
+
+        <!--Metody pro e-->
+        <div class="panel p-4">
+            <h2 style="text-align: center;" class="text-sm mb-2 text-blue-400">Eulerovo číslo (e)</h2>
+            <div class="space-y-1" id="e-metody">
+                <button onclick="prepinacMetody('e','Limita',this)" class="w-full text-middle px-2 py-1 border border-slate-800 hover:bg-slate-800 text-sm">Definice limitou</button>
+                <button onclick="prepinacMetody('e','Faktorialova_rada',this)" class="w-full text-middle px-2 py-1 border border-slate-800 hover:bg-slate-800 text-sm">Faktoriálová řada</button>
+                <button onclick="prepinacMetody('e','Retezovy_zlomek_e',this)" class="w-full text-middle px-2 py-1 border border-slate-800 hover:bg-slate-800 text-sm">Řetězový zlomek</button>
+            </div>
+        </div>
+
+        <!--Metody pro fí-->
+        <div class="panel p-4">
+            <h2 style="text-align: center;" class="text-sm mb-2 text-blue-400">Zlatý řez (φ)</h2>
+            <div class="space-y-1" id="fi-metody">
+                <button onclick="prepinacMetody('fi','Fibonacciho_podily',this)" class="w-full text-middle px-2 py-1 border border-slate-800 hover:bg-slate-800 text-sm">Fibonacciho podíly</button>
+                <button onclick="prepinacMetody('fi','Retezovy_zlomek_fi',this)" class="w-full text-middle px-2 py-1 border border-slate-800 hover:bg-slate-800 text-sm">Řetězový zlomek</button>
+                <button onclick="prepinacMetody('fi','Pevny_bod',this)" class="w-full text-middle px-2 py-1 border border-slate-800 hover:bg-slate-800 text-sm">Pevný bod</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!--Panel pro výběr a nastavení limitu, spuštění/reset a zobrazení matematického vzorce-->
+    <div class="panel p-4 space-y-4">
+        <div class="flex flex-wrap gap-4 items-center">
+            <!--Výběr limitu-->
+            <div>
+                <label class="text-sm">Režim:</label>
+                <select id="typLimitu" onchange="updateLimitu()">
+                    <option value="iterace">Iterace</option>
+                    <option value="sekundy">Čas</option>
+                </select>
+            </div>
+
+            <!--Hodnota limitu-->
+            <div>
+                <input type="number" id="hodnotaLimitu" value="1000" class="w-24">
+                <span id="napovedaLimitu" class="text-xs">Max. 2000</span>
+            </div>
+
+            <!--Tlačítka pro spuštění a reset-->
+            <div class="flex gap-2">
+                <button onclick="spustSimulaci()" class="bg-blue-600 text-white px-4 py-1 rounded text-sm">Spustit</button>
+                <button onclick="resetSystemu()" class="border border-red-500 text-red-500 px-4 py-1 rounded text-sm">Reset</button>
+            </div>
+
+            <!--Zobrazení matematického vzorce-->
+            <div style="text-align: center;" id="matematicky-vzorec" class="text-base ml-auto mr-5">
+            Matematický vzorec metody
+            </div>
+        </div>
+    </div>
+
+    <!--Panely pro grafy-->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="panel p-4">
+            <h2 class="text-sm mb-2">Graf přesnosti (Správná desetinná místa)</h2>
+            <div class="h-64"><canvas id="grafPresnosti"></canvas></div>
+        </div>
+
+        <div class="panel p-4">
+            <h2 id="nazev-rychlosti" class="text-sm mb-2">Graf rychlosti růstu (DPI)</h2>
+            <div class="h-64"><canvas id="grafRychlosti"></canvas></div>
+        </div>
+    </div>
+
+    <!--Panely pro terminál a tabulku výsledků-->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <!--Terminál-->
+        <div class="panel p-3 h-64 overflow-y-auto text-sm">
+            <div class="mb-2 text-slate-400">Terminál</div>
+            <div id="log-simulace">Systém připraven…</div>
+        </div>
+
+        <!--Tabulka výsledků-->
+        <div class="panel p-3 h-64 overflow-y-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr style="text-align: left;" class="text-slate-400">
+                        <th>Bod</th>
+                        <th>Metoda</th>
+                        <th>Cifry</th>
+                        <th id="typ-metriky">DPI</th>
+                    </tr>
+                </thead>
+                <tbody id="telo-vysledku"></tbody>
+            </table>
+        </div>
+
+    </div>
+
+</main>
+
+<!--Připojení Javascriptu-->
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
