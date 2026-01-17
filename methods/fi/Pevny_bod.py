@@ -38,8 +38,6 @@ def vypocet(typ_limitu, hodnota_limitu):    #Výpočet zlatého řezu pomocí pe
 
         cas_vypoctu += (time.process_time() - start_cas)    #Postupné přičítání času výpočtu
 
-        krok += 1   #Přidání iterace
-
         #Kontrola ukončení výpočtu
         if (typ_limitu == 'iterace' and krok > hodnota_limitu) or \
            (typ_limitu == 'sekundy' and cas_vypoctu >= hodnota_limitu) or krok > 5000000:
@@ -73,6 +71,8 @@ def vypocet(typ_limitu, hodnota_limitu):    #Výpočet zlatého řezu pomocí pe
             predchozi_presnost, predchozi_krok, predchozi_cas = aktualni_presnost, krok, cas_vypoctu
             index_mereni += 1
             if index_mereni > pocet_mereni: break
+
+        krok += 1   #Přidání iterace
             
 
     #Uložení posledního bodu na konec grafu (pokud tam ještě není)
