@@ -30,6 +30,19 @@ def vypocet(typ_limitu, hodnota_limitu):    #Výpočet zlatého řezu pomocí pe
     presnost_data.append(0)
     rychlost_konvergence.append(0)
 
+    #Uložení první iterace metody
+    if typ_limitu == 'iterace':
+                aktualni_presnost = int(spravne_desetinne(fi, REAL_FI))
+                rozdil_kroku = (krok - predchozi_krok)
+                rychlost = float(aktualni_presnost - predchozi_presnost) / rozdil_kroku if rozdil_kroku > 0 else 0
+    
+                osa_x.append(int(krok))
+                presnost_data.append(aktualni_presnost)
+                rychlost_konvergence.append(float(rychlost))
+
+                predchozi_presnost, predchozi_krok, predchozi_cas = aktualni_presnost, krok, cas_vypoctu
+                index_mereni += 1
+
     #Cyklus pro výpočet metody
     while True:
         start_cas = time.process_time()    #Čas začátku iterace
@@ -37,6 +50,8 @@ def vypocet(typ_limitu, hodnota_limitu):    #Výpočet zlatého řezu pomocí pe
         fi = jedna + jedna / fi #Výpočet jedné iterace
 
         cas_vypoctu += (time.process_time() - start_cas)    #Postupné přičítání času výpočtu
+
+        krok += 1   #Přidání iterace
 
         #Kontrola ukončení výpočtu
         if (typ_limitu == 'iterace' and krok > hodnota_limitu) or \
@@ -70,9 +85,6 @@ def vypocet(typ_limitu, hodnota_limitu):    #Výpočet zlatého řezu pomocí pe
             #Aktualizace posledních hodnot (pro výpočet rychlosti růstu)
             predchozi_presnost, predchozi_krok, predchozi_cas = aktualni_presnost, krok, cas_vypoctu
             index_mereni += 1
-            if index_mereni > pocet_mereni: break
-
-        krok += 1   #Přidání iterace
             
 
     #Uložení posledního bodu na konec grafu (pokud tam ještě není)

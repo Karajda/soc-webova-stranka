@@ -77,8 +77,6 @@ def vypocet(typ_limitu, hodnota_limitu):    #Výpočet čísla pí pomocí Leibn
             #Aktualizace posledních hodnot (pro výpočet rychlosti růstu)
             predchozi_presnost, predchozi_krok, predchozi_cas = aktualni_presnost, krok, cas_vypoctu
             index_mereni += 1
-            if index_mereni > pocet_mereni:
-                break
 
         krok += 1    #Přidání iterace
 

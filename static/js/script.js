@@ -20,7 +20,7 @@ const matematickeVzorce = {
     'Wallis': '\\frac{\\pi}{2} = \\prod_{n=1}^{\\infty} \\left( \\frac{4n^2}{4n^2 - 1} \\right)',
     'Machin': '\\frac{\\pi}{4} = 4\\arctan\\left(\\frac{1}{5}\\right) - \\arctan\\left(\\frac{1}{239}\\right)',
     'Ramanujan': '\\frac{1}{\\pi} = \\frac{2\\sqrt{2}}{9801} \\sum_{n=0}^{\\infty} \\frac{(4n)!(1103+26390n)}{(n!)^4 396^{4n}}',
-    'Montecarlo': '\\pi \\approx 4 \\cdot \\frac{\\text{počet bodů v kruhu}}{\\text{celkový počet bodů}}',
+    'Montecarlo': '\\pi = 4 \\cdot \\frac{\\text{počet bodů v kruhu}}{\\text{celkový počet bodů}}',
 
     //Číslo fí
     'Fibonacciho_podily': '\\varphi = \\lim_{n \\to \\infty} \\frac{F_{n+1}}{F_n}, \\quad F_n = \\begin{cases} 0 & n=0 \\\\ 1 & n=1 \\\\ F_{n-1} + F_{n-2} & n \\ge 2 \\end{cases}',
